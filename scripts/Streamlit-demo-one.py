@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
-st.title('A Streamlit app demo')
+st.title('Streamlit app demo (with Numpy, Pandas, Scikit-learn)')
 """
 ## Dr. Tirthajyoti Sarkar, Fremont, CA, July 2020
 [My LinkedIn profile](https://www.linkedin.com/in/tirthajyoti-sarkar-2127aa7/),
@@ -203,23 +203,25 @@ Numpy arrays are also rendered nicely by the `st.write()` method,
 although for long arrays the vertical rendering can become unwieldy.
 
 ```
-a = np.arange(1,20,2) #Positive odd integers up to 20
+a = np.arange(1, 20, 2) #Positive odd integers up to 20
 st.write(a)
 """
 
-a = np.arange(1,20,2)
+a = np.arange(1, 20, 2)
 st.write(a)
 
 """
 ### Two-dimensional arrays
 ```
-b = np.arange(1,21).reshape(5,4)
+b = np.arange(1, 21).reshape(5, 4)
 st.write(b)
 """
-b = np.arange(1,21).reshape(5,4)
+b = np.arange(1, 21).reshape(5, 4)
 st.write(b)
 
 """
+### The transpose
+
 ```
 st.write(b.T)
 """
@@ -227,7 +229,7 @@ st.write(b.T)
 
 """
 ---
-## Defining a Pandas DataFrame
+## Working with Pandas DataFrame
 
 We can render a Pandas DataFrame either by using `st.write()` or `st.dataframe()`
 methods.
@@ -263,6 +265,58 @@ df['A6'] = 10*np.sin(df['A1'])
 df['A7'] = 0.1*df['A2']**2
 
 st.write(df)
+
+"""
+### Applying a filter on the DataFrame
+
+We filter the DataFrame by selecting only those rows where `A1` > 0 and `A3` > 3.
+Note that due to the random nature of the DataFrame generation, **there is no guarantee that
+we will get a non-empty DataFrame every time we re-run the code**.
+"""
+
+code_df2 = '''
+df_filtered = df[(df['A1']>0) & (df['A2']>3)]
+st.write(df_filtered)'''
+
+st.code(code_df2)
+
+df_filtered = df[(df['A1']>0) & (df['A2']>3)]
+st.write(df_filtered)
+
+"""
+### Now, write the filtered DataFrame on the disk
+We can easily ask the user a filename and write the filtered data to that file!
+"""
+
+csv_filename = str(st.text_input("Enter a filename for saving the DataFrame as a CSV file",
+                                max_chars=30))
+
+if ('.csv' not in csv_filename and len(csv_filename)>0):
+    csv_filename += ".csv"
+if len(csv_filename)>0:
+    df_filtered.to_csv(csv_filename)
+    st.markdown("#### File was saved.")
+else:
+    st.markdown("#### No filename was provided. Nothing was saved.")
+
+"""
+### Reading a CSV from the web
+
+Reading data from a remotely hosted file (and rendering in a DataFrame)
+is as easy as the short code below,
+"""
+code_df_csv = '''data_url = "https://raw.githubusercontent.com/tirthajyoti/
+D3.js-examples/master/html/data/worldcup.csv"
+
+df_csv = pd.read_csv(data_url)
+
+st.write(df_csv)'''
+
+st.code(code_df_csv)
+
+data_url = "https://raw.githubusercontent.com/tirthajyoti/D3.js-examples/master/html/data/worldcup.csv"
+df_csv = pd.read_csv(data_url)
+st.write(df_csv)
 
 """
 ## Line chart of some of the columns of the DataFrame
