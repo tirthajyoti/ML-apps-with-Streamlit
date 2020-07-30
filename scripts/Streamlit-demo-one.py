@@ -20,13 +20,24 @@ In this demo, we will cover the following aspects with Streamlit,
 - LaTeX and code rendering
 - Python objects rendering
 - Numpy arrays rendering
-- Pandas DataFrame
-- Line chart
+- Working with Pandas DataFrame
+    - Filtering data
+    - Bar chart
+    - Line chart (Altair)
 - Widget magic and interactivity
 - Pyplot (Matplotlib graphs)
 - A linear regression problem (interactive)
 
-### Write a script, run it to see the app
+### What's the goal?
+The primary goal in this app is to show the application of Streamlit working
+synergistically with **Python objects** - numbers, strings, Numpy arrays,
+Pandas DataFrames, Matplotlib graphs, Scikit-learn estimators,
+and **interactive web-app elements** - textboxes, sliders, file-explorer, etc.
+
+As a secondary goal, we illustrate the **rendering capabilities** of Streamlit for
+other type of content such as LaTeX, code, markdown, images, etc.
+
+### How to run this app?
 We basically write a Python script called `Streamlit-demo-one.py` and
 just run it with the following command on the terminal,
 
@@ -169,7 +180,7 @@ st.write("tuple1: ",tuple1)
 
 """
 ### A dictionary
-Here is how the dict `dict1 = {'Item1':10, 'Item2':[1,3,5],'Item3':-5}` gets renderd...
+Here is how the dict `dict1 = {'Item1':10, 'Item2':[1,3,5],'Item3':-5}` gets rendered...
 """
 dict1 = {'Item1':10, 'Item2':[1,3,5],'Item3':-5}
 st.write("dict1: ", dict1)
@@ -199,7 +210,8 @@ st.write(square)
 ---
 ## Numpy arrays
 
-Numpy arrays are also rendered nicely by the `st.write()` method,
+Numpy arrays (one- and two-dimensional) are also rendered nicely
+by the `st.write()` method,
 although for long arrays the vertical rendering can become unwieldy.
 
 ```
@@ -218,6 +230,15 @@ st.write(b)
 """
 b = np.arange(1, 21).reshape(5, 4)
 st.write(b)
+
+"""
+### Three-dimensional arrays (rendered normally)
+```
+c = np.arange(1, 21).reshape(5, 2, 2)
+st.write(c)
+"""
+c = np.arange(1, 21).reshape(5, 2, 2)
+st.write(c)
 
 """
 ### The transpose
@@ -305,22 +326,52 @@ else:
 Reading data from a remotely hosted file (and rendering in a DataFrame)
 is as easy as the short code below,
 """
-code_df_csv = '''data_url = "https://raw.githubusercontent.com/tirthajyoti/
+code_df_csv = '''
+data_url = "https://raw.githubusercontent.com/tirthajyoti/
 D3.js-examples/master/html/data/worldcup.csv"
-
 df_csv = pd.read_csv(data_url)
-
-st.write(df_csv)'''
+df_csv=df_csv.shift(2,axis=1).reset_index().drop(['team','region'],axis=1)
+df_csv.columns = ['team','region','win','loss','draw','points','gf','ga','cs','yc','rc']
+st.write(df_csv)
+'''
 
 st.code(code_df_csv)
 
 data_url = "https://raw.githubusercontent.com/tirthajyoti/D3.js-examples/master/html/data/worldcup.csv"
 df_csv = pd.read_csv(data_url)
+df_csv=df_csv.shift(2,axis=1).reset_index().drop(['team','region'],axis=1)
+df_csv.columns = ['team','region','win','loss','draw','points','gf','ga','cs','yc','rc']
 st.write(df_csv)
 
 """
-## Line chart of some of the columns of the DataFrame
+### A simple bar chart using Pandas built-in `plot` module
+"""
+code_bar = '''
+# Goal difference => gf - ga
+df_csv['gd'] = df_csv['gf'] - df_csv['ga']
+fig=df_csv.sort_values(by='gd', ascending=False)[['team','gd']].plot.bar(x='team',
+                                                y='gd',figsize=(7, 6))
+plt.grid(True)
+plt.title("Goal difference bar chart")
+plt.xticks(rotation=30)
+st.pyplot()
+'''
 
+st.code(code_bar)
+
+# Goal difference => gf - ga
+df_csv['gd'] = df_csv['gf'] - df_csv['ga']
+fig=df_csv.sort_values(by='gd', ascending=False)[['team','gd']].plot.bar(x='team',
+                                                y='gd',figsize=(7, 6))
+plt.grid(True)
+plt.title("Goal difference bar chart")
+plt.xticks(rotation=30)
+st.pyplot()
+
+"""
+## Line chart with Altair library
+
+We take some of the columns from the DataFrame and create a line chart.
 This line chart is based on the
 [`Altair` library](https://altair-viz.github.io/getting_started/overview.html)
 charting function.
