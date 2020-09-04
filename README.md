@@ -1,5 +1,8 @@
-# ML-apps-with-Streamlit
-Building simple ML apps with Streamlit.
+# ML and data apps with Streamlit
+Building simple ML and data apps with Streamlit.
+
+## See my article
+See [my article on Medium](https://towardsdatascience.com/data-analytics-to-web-app-streamlit-made-easy-ed687266f0e8) on this topic.
 
 ## How to run the apps (scripts)
 
