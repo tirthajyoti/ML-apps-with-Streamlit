@@ -5,7 +5,7 @@ Building simple ML apps with Streamlit.
 
 ### First,
 
-`pip install streamlit`
+`pip install -U streamlit`
 
 ### Second, 
 Make sure you also have other packages as featured in the scripts (the following list is not exhaustive),
@@ -14,6 +14,9 @@ Make sure you also have other packages as featured in the scripts (the following
 - `Pandas`
 - `Matplotlib`
 - `Scikit-learn`
+- `Seaborn`
+
+etc.
 
 ### Finally,
 Open your terminal. Go to the folder/directory where these scripts reside. Then, run,
