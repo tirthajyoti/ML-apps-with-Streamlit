@@ -1,3 +1,5 @@
+[![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
+
 # ML and data apps with Streamlit
 Building simple ML and data apps with Streamlit.
 
